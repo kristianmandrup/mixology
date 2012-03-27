@@ -10,17 +10,30 @@
 # define RCLASS_IV_TBL(c) (RCLASS(c)->iv_tbl)
 #endif
 
+/* Things are a little different in 1.9.3 */
+#ifdef RUBY_193
+#include <ruby/backward/classext.h>
+# define RCLASS_IV_TBL(c) (RCLASS(c)->iv_index_tbl)
+# define RCLASS_M_TBL(c) (RCLASS(c)->m_tbl)
+#endif
+
 #ifdef RUBY_19
 static VALUE class_alloc(VALUE flags, VALUE klass)
 {
+#ifdef RUBY_193
+    rb_deprecated_classext_t *ext = ALLOC(rb_deprecated_classext_t);
+#else
     rb_classext_t *ext = ALLOC(rb_classext_t);
+#endif
     NEWOBJ(obj, struct RClass);
     OBJSETUP(obj, klass, flags);
     obj->ptr = ext;
     RCLASS_IV_TBL(obj) = 0;
     RCLASS_M_TBL(obj) = 0;
     RCLASS_SUPER(obj) = 0;
+#ifndef RUBY_193
     RCLASS_IV_INDEX_TBL(obj) = 0;
+#endif
     return (VALUE)obj;
 }
 #endif
