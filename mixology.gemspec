@@ -19,6 +19,6 @@ Gem::Specification.new do |s|
     s.files += ["lib/mixology.jar"]
   else
     s.platform = Gem::Platform::RUBY
-    s.extensions = ::Dir.glob("ext/**/extconf.rb")
+    s.extensions = %w(ext/mixology/extconf.rb)
   end
 end

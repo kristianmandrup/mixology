@@ -180,4 +180,19 @@ class MixologyTest < Test::Unit::TestCase
     defined?(RUBY_ENGINE) && RUBY_ENGINE == "rbx"
   end
 
+  def test_mixed_in_hook
+    a = Module.new { def self.mixed_in(obj); obj.instance_variable_set(:@called, true) ;end }
+    o = Object.new
+    o.mixin a
+    assert_equal true, o.instance_variable_get(:@called)
+  end
+
+  def test_mixed_in_hook
+    a = Module.new { def self.unmixed(obj); obj.instance_variable_set(:@called, true) ;end }
+    o = Object.new
+    o.mixin a
+    o.unmix a
+    assert_equal true, o.instance_variable_get(:@called)
+  end
+
 end
